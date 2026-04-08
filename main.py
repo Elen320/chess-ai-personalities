@@ -2,6 +2,7 @@ import pygame # for interface
 import chess # chess logic, identifies legal moves
 import sys
 import random
+from Timer import ChessTimer
 
 
 pygame.init()
@@ -9,6 +10,13 @@ pygame.init()
 screen = pygame.display.set_mode((720, 720))
 
 pygame.display.set_caption("Chess with personalities")
+
+# --- TIMER SETUP ---
+white_timer = ChessTimer(600) # 10 minutes
+black_timer = ChessTimer(600)
+clock = pygame.time.Clock() # To track frames
+turn = "white" 
+# --------------------
 
 running = True
 
@@ -29,9 +37,26 @@ for symbol, name in piece_names.items():
 board = chess.Board()
 
 while running:
+    
+    # 1. TIME CALCULATION
+    dt = clock.tick(60) / 1000  # Amount of time passed since last frame in seconds
+    
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            
+            # Example: Switch turns when a key is pressed (for testing)
+        if event.type == pygame.KEYDOWN:
+            turn = "black" if turn == "white" else "white"
+
+    # 2. UPDATE ACTIVE TIMER
+    if turn == "white":
+        white_timer.update(dt)
+    else:
+        black_timer.update(dt)
+        
+        
     screen.fill((58, 66, 57))
     for row in range(8):
         for col in range(8):
@@ -46,6 +71,11 @@ while running:
                 symbol = piece.symbol()
                 if symbol in piece_images:
                     screen.blit(piece_images[symbol], (Offset + col*80 + 5, Offset + row*80 + 5))
+    
+    # 3. DRAW TIMERS ON SCREEN
+    # Displaying them below the board
+    white_timer.draw(screen, 50, 685)
+    black_timer.draw(screen, 500, 685)
     
     pygame.display.flip()
 pygame.quit()
