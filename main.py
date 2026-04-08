@@ -45,7 +45,7 @@ while running:
             if piece:
                 symbol = piece.symbol()
                 if symbol in piece_images:
-                    screen.blit(piece_images[symbol], (Offset + col*80, Offset + row*80))
+                    screen.blit(piece_images[symbol], (Offset + col*80 + 5, Offset + row*80 + 5))
     
     pygame.display.flip()
 pygame.quit()
